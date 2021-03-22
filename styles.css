@@ -1,0 +1,50 @@
+    body {
+        width: 150px;
+        ;
+    }
+
+    #Slider {
+        width: 130px;
+        padding-left: 10px;
+        padding-right: 10px;
+    }
+
+    #button-value-box {
+        display: inline-block;
+    }
+
+    #speed-box {
+        float: left;
+        padding: 0;
+        margin: 0;
+        border: black;
+    }
+
+    #speed-text {
+        padding: 0;
+        margin: 5px;
+        margin-right: 3px;
+        font-family: Arial, Helvetica, sans-serif;
+    }
+
+    #speed-input {
+        width: 30px;
+        border: none;
+    }
+
+    #speed-shift-container {
+        float: left;
+        border: none;
+        border-radius: 0%;
+    }
+
+    .speed-button {
+        width: 30px;
+        height: 25px;
+        font-size: 12pt;
+        text-align: center;
+        padding-left: 0%;
+        padding-right: 0%;
+        border-radius: 0;
+        border: none;
+    }
