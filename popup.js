@@ -5,6 +5,7 @@ document.addEventListener('DOMContentLoaded', function() {
     document.getElementById('left-shift').onclick = function() { changeSpeed(-.25); };
     // document.getElementById('speed-input').addEventListener('onkeypress', isNumber);
 
+    // constant min and max
     const SLIDEFACTOR = 20;
     const SLIDEMIN = .1;
     const SLIDEMAX = 5;
@@ -14,21 +15,25 @@ document.addEventListener('DOMContentLoaded', function() {
     var decimal_bool = false;
     var slider = document.getElementById("Slider");
     var input = document.getElementById("speed-input");
-
-    slider.value = SLIDEFACTOR;
-    videoSpeed = slider.value / SLIDEFACTOR;
-    input.value = slider.value / SLIDEFACTOR;
+    var savedSpeed = parseFloat(localStorage['speed']);
+    setSpeed(savedSpeed);
+    
+    // set html elements to proper values and track the agreed video speed
+    slider.value = savedSpeed != undefined ? savedSpeed * SLIDEFACTOR : SLIDEFACTOR;
+    videoSpeed = savedSpeed != undefined ? savedSpeed : slider.value / SLIDEFACTOR;
+    input.value = savedSpeed != undefined ? savedSpeed : slider.value / SLIDEFACTOR;
 
     slider.oninput = function() {
         setSlider(slider.value / SLIDEFACTOR);
     };
+
     input.onclick = function () {
         input_temp = input.value;
         input.value = "";
     };
 
     input.onchange = function() {
-        if (input.value >= SLIDEMIN && input.value <= SLIDEMAX) {
+        if (parseFloat(input.value) >= SLIDEMIN && parseFloat(input.value) <= SLIDEMAX) {
             input_temp = input.value;
             setSlider(input.value);
         } else {
@@ -52,9 +57,10 @@ document.addEventListener('DOMContentLoaded', function() {
     // FUNCTIONS
 
     function setSpeed(newSpeed) {
+        localStorage['speed'] = newSpeed;
         console.log(newSpeed);
         videoSpeed = newSpeed;
-        input.value = videoSpeed;
+        input.value = videoSpeed.toFixed(2);
         chrome.tabs.query({ currentWindow: true, active: true },
             function(tabs) {
                 chrome.tabs.sendMessage(tabs[0].id, newSpeed)
