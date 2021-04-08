@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>Speedy Settings</title>
+    <meta name="description" content="">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="settings.css">
+</head>
+
+<body>
+
+    <div id="settingsBody">
+        <label for="step">New Step: </label>
+        <div id="selection">
+            <button value="0.01">0.01</button>
+            <button value="0.05">0.05</button>
+            <button value="0.10">0.10</button>
+            <button value="0.25">0.25</button>
+            <button value="0.50">0.50</button>
+            <button value="1.00">1.00</button>
+        </div>
+        <br>
+
+        <label for="step">Step Size: <input class="input-field" id="step-text" type="number" min=".05" max="1"></label>
+        <input class="range" id="step" min=".05" max="1" step=".05" type="range">
+        <br>
+        <label for="max">Max Speed: <input class="input-field" id="max-text" type="number" max="15" min=".25"></label>
+        <input class="range" id="max" max="15" min=".25" step=".05" type="range">
+        <br>
+        <label for="min">Min Speed: <input class="input-field" id="min-text" type="number" max="14.75"
+                min=".05"></label>
+        <input class="range" id="min" max="14.75" min=".05" step=".05" type="range">
+        <br>
+        <div id="apply-box">
+            <button id="apply">Apply</button>
+        </div>
+    </div>
+
+
+    <script src="settings.js"></script>
+</body>
+
+</html>

@@ -1,0 +1,46 @@
+body {
+    width: 230px;
+}
+
+#apply {
+    height: 25px;
+    font-size: 10pt;
+    text-align: center;
+    padding-left: 5px;
+    padding-right: 5px;
+    margin: 5px;
+    float: left;
+    border-radius: 0;
+    border: none;
+}
+
+.input-field {
+    width: 50px;
+    border: none;
+}
+
+.approved {
+    padding: 10px 5px;
+    color: rgb(5, 197, 5);
+}
+
+.denied {
+    color: rgb(252, 93, 93);
+}
+
+.range {
+    width: 150px;
+}
+
+#selection button{
+    font-size: 12px;
+    width: 35px;
+    height: 20px;
+    padding: 0 0;
+    border-radius: 0;
+    border: none;
+}
+
+#selection .selected {
+    background-color: green;
+}
