@@ -1,30 +1,36 @@
 document.addEventListener('DOMContentLoaded', function() {
 
+    var settingsUri = 'chrome-extension://' + chrome.runtime.id + '/settings.html';
+    var settingsElem = document.getElementById('settings');
+    settingsElem.href = settingsUri;
 
     document.getElementById('right-shift').onclick = function() { changeSpeed(.25); };
     document.getElementById('left-shift').onclick = function() { changeSpeed(-.25); };
     // document.getElementById('speed-input').addEventListener('onkeypress', isNumber);
-
-    // constant min and max
-    const SLIDEFACTOR = 20;
-    const SLIDEMIN = .1;
-    const SLIDEMAX = 5;
 
     var videoSpeed;
     var input_temp;
     var decimal_bool = false;
     var slider = document.getElementById("Slider");
     var input = document.getElementById("speed-input");
+
     var savedSpeed = parseFloat(localStorage['speed']);
+    var maxSpeed = parseFloat(localStorage['speed-max']);
+    var minSpeed = parseFloat(localStorage['speed-min']);
+    var stepSpeed = parseFloat(localStorage['speed-step']);
+
+    slider.max = maxSpeed;
+    slider.min = minSpeed;
+    slider.step = stepSpeed;
     setSpeed(savedSpeed);
     
     // set html elements to proper values and track the agreed video speed
-    slider.value = savedSpeed != undefined ? savedSpeed * SLIDEFACTOR : SLIDEFACTOR;
-    videoSpeed = savedSpeed != undefined ? savedSpeed : slider.value / SLIDEFACTOR;
-    input.value = savedSpeed != undefined ? savedSpeed : slider.value / SLIDEFACTOR;
+    slider.value = savedSpeed != undefined && savedSpeed <= maxSpeed && savedSpeed >= minSpeed  ? savedSpeed : minSpeed + stepSpeed;
+    videoSpeed = slider.value;
+    input.value = slider.value;
 
     slider.oninput = function() {
-        setSlider(slider.value / SLIDEFACTOR);
+        setSlider(slider.value);
     };
 
     input.onclick = function () {
@@ -33,7 +39,7 @@ document.addEventListener('DOMContentLoaded', function() {
     };
 
     input.onchange = function() {
-        if (parseFloat(input.value) >= SLIDEMIN && parseFloat(input.value) <= SLIDEMAX) {
+        if (parseFloat(input.value) >= minSpeed && parseFloat(input.value) <= maxSpeed) {
             input_temp = input.value;
             setSlider(input.value);
         } else {
@@ -59,7 +65,7 @@ document.addEventListener('DOMContentLoaded', function() {
     function setSpeed(newSpeed) {
         localStorage['speed'] = newSpeed;
         console.log(newSpeed);
-        videoSpeed = newSpeed;
+        videoSpeed = parseFloat(newSpeed);
         input.value = videoSpeed.toFixed(2);
         chrome.tabs.query({ currentWindow: true, active: true },
             function(tabs) {
@@ -68,10 +74,10 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     function setSlider(slideSpeed) {
-        slideSpeed = slideSpeed > SLIDEMAX ?
-            SLIDEMAX : slideSpeed < SLIDEMIN ?
-            SLIDEMIN : slideSpeed;
-        slider.value = slideSpeed * SLIDEFACTOR;
+        slideSpeed = slideSpeed > maxSpeed ?
+            maxSpeed : slideSpeed < minSpeed ?
+            minSpeed : slideSpeed;
+        slider.value = slideSpeed;
         setSpeed(slideSpeed);
     }
 
@@ -91,6 +97,5 @@ document.addEventListener('DOMContentLoaded', function() {
         }
         return false;
     }
-
 
 }, false);

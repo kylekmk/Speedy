@@ -1,5 +1,4 @@
 var body = document.body;
-var step = document.getElementById('step');
 var max = document.getElementById('max');
 var min = document.getElementById('min');
 
@@ -9,22 +8,28 @@ var min_input = document.getElementById('min-text');
 
 var apply = document.getElementById('apply');
 var validVal;
+var step;
 
-document.querySelectorAll('#selection button').forEach(elem => elem.onclick = () => setStep(elem));
-var selectedBtn;
+var buttons = document.querySelectorAll('#selection button');
+buttons.forEach(elem => {
+    elem.onclick = () => setStep(elem);
+    if (elem.value === localStorage['speed-step']) {
+        step = elem;
+    }
+});
+setStep(step);
 
 
 // TEMPORARY -- ADD PERSISTANCE
-step.value = localStorage['speed-step'];
 max.value = localStorage['speed-max'];
 min.value = localStorage['speed-min'];
 
-adjustLabel(step_input, step);
 adjustLabel(max_input, max);
 adjustLabel(min_input, min);
 
+// Check validity of current configuration
 apply.onclick = () => {
-    if (validVal == undefined) {
+    if (validVal === undefined) {
         validVal = document.createElement('p');
         document.getElementById('apply-box').appendChild(validVal);
     }
@@ -36,19 +41,18 @@ apply.onclick = () => {
         validVal.className = 'approved';
         validVal.innerText = 'Changes Applied!';
     } else {
-        step.value = localStorage['speed-step'];
+        step = buttons.forEach(elem => {
+            if (elem.value = localStorage['speed-step']) {
+                return elem;
+            }
+        });
         max.value = localStorage['speed-max'];
         min.value = localStorage['speed-min'];
-        adjustLabel(step_input, step);
         adjustLabel(max_input, max);
         adjustLabel(min_input, min);
         validVal.className = 'denied'
         validVal.innerText = 'Invalid Settings!'
     }
-};
-
-step.oninput = () => {
-    adjustLabel(step_input, step);
 };
 
 max.oninput = () => {
@@ -59,20 +63,43 @@ min.oninput = () => {
     adjustLabel(min_input, min);
 };
 
+// adjusts label for sliders
 function adjustLabel(input_field, elem) {
     var roundNum = parseFloat(elem.value).toFixed(2);
     input_field.value = roundNum;
 }
 
+// returns boolean for valid configuration
 function validValues() {
-    return min.value < max.value && step.value <= max.value - min.value;
+    return min.value < max.value;
 }
 
+// function the buttons call, sets step value
 function setStep(btn) {
-    if (selectedBtn != undefined) {
-        selectedBtn.className = '';
+    if (step !== undefined) {
+        step.className = '';
     }
+    console.log(btn);
+    roundMinMax(btn.value);
     btn.className = 'selected';
-    selectedBtn = btn;
+    step = btn;
 }
-// STEP SHOULD BE .01 .05 .1 .25 .5 or 1
+
+// Round to fit within step
+function roundMinMax(factor) {
+    factor = parseFloat(factor);
+    var minNum = parseFloat(min.value);
+    var maxNum = parseFloat(max.value);
+
+    var minMod = min.value % factor;
+    var maxMod = max.value % factor;
+    var minVal = minMod < factor / 2 ? minNum - minMod : minNum + (factor - minMod);
+    var maxVal = maxMod < factor / 2 ? maxNum - maxMod : maxNum + (factor - maxMod);
+
+    min.value = minVal;
+    max.value = maxVal;
+    min.step = factor;
+    max.step = factor;
+    adjustLabel(max_input, max);
+    adjustLabel(min_input, min);
+}
