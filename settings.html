@@ -4,31 +4,37 @@
 
 <head>
     <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <title>Speedy Settings</title>
-    <meta name="description" content="">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="stylesheet" href="settings.css">
+    <link rel="stylesheet" href="../settings.css">
 </head>
 
 <body>
-
-    <div id="settingsBody">
-        <label for="step">Step: </label>
+    <a id="back">
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+            class="bi bi-arrow-left-circle-fill" viewBox="0 0 16 16">
+            <path
+                d="M8 0a8 8 0 1 0 0 16A8 8 0 0 0 8 0zm3.5 7.5a.5.5 0 0 1 0 1H5.707l2.147 2.146a.5.5 0 0 1-.708.708l-3-3a.5.5 0 0 1 0-.708l3-3a.5.5 0 1 1 .708.708L5.707 7.5H11.5z" />
+        </svg>
+    </a>
+    <div>
+        <label for="step">Step Size: </label>
         <div id="selection">
             <button value="0.25">0.25</button>
             <button value="0.50">0.50</button>
             <button value="1.00">1.00</button>
         </div>
-        <br>
-
-        <label for="max">Max Speed: <input class="input-field" id="max-text" type="number" max="15" min=".25"></label>
-        <input class="range" id="max" max="15" min="0" step=".05" type="range">
-        <br>
-        <label for="min">Min Speed: <input class="input-field" id="min-text" type="number" max="14.75"
-                min=".00"></label>
-        <input class="range" id="min" max="15" min="0" step=".05" type="range">
-        <br>
+        <div id="slider-body">
+            <div class="label-box">
+                <label for="max">Max Speed: </label>
+                <input class="input-field" id="max-text" type="number" max="15" min=".25">
+                <input class="range" id="max" max="15" min="0" step=".05" type="range">
+            </div>
+            <div class="label-box">
+                <label for="min">Min Speed: </label>
+                <input class="input-field" id="min-text" type="number" max="14.75" min=".00">
+                <input class="range" id="min" max="15" min="0" step=".05" type="range">
+            </div>
+        </div>
         <div id="apply-box">
             <button id="apply">Apply</button>
         </div>

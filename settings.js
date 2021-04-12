@@ -1,3 +1,7 @@
+var backUri = '../popup.html';
+var backElem = document.getElementById('back');
+backElem.href = backUri;
+
 var body = document.body;
 var max = document.getElementById('max');
 var min = document.getElementById('min');
@@ -41,9 +45,9 @@ apply.onclick = () => {
         validVal.className = 'approved';
         validVal.innerText = 'Changes Applied!';
     } else {
-        step = buttons.forEach(elem => {
+        buttons.forEach(elem => {
             if (elem.value = localStorage['speed-step']) {
-                return elem;
+                step = elem;
             }
         });
         max.value = localStorage['speed-max'];
@@ -71,7 +75,7 @@ function adjustLabel(input_field, elem) {
 
 // returns boolean for valid configuration
 function validValues() {
-    return min.value < max.value;
+    return parseFloat(min.value) < parseFloat(max.value);
 }
 
 // function the buttons call, sets step value

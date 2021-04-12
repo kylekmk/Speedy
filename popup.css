@@ -1,0 +1,104 @@
+@import url(https://fonts.googleapis.com/css?family=Dosis:700);
+body {
+    width: 250px;
+    font-family: "Dosis", Helvetica, Arial, sans-serif;
+    background: #ecf0f1;
+    color: #34495e;
+    text-shadow: white 1px 1px 1px;
+    user-select: none;
+}
+
+#speed-shift-container {
+    width: 132px;
+    height: 30px;
+    margin: auto 59px;
+}
+
+.speed-button {
+    float: left;
+    margin: auto 2px;
+}
+
+/* ------------------- */
+
+.value {
+    background: transparent;
+    border: none;
+    border-bottom: 2px dashed #bdc3c7;
+    text-align: center;
+    font-weight: bold;
+    font-size: 5em;
+    width: 150px;
+    height: 50px;
+    line-height: 30px;
+    margin: 20px 48px;
+    vertical-align: middle;
+    letter-spacing: -.035em;
+    text-shadow: white 1px 1px 1px;
+    overflow: visible;
+}
+
+.value:focus {
+    outline: none;
+}
+
+input[type="range"] {
+    display: block;
+    -webkit-appearance: none;
+    background-color: #bdc3c7;
+    width: 230px;
+    height: 5px;
+    border-radius: 5px;
+    margin: 0 10px;
+    outline: 0;
+}
+
+input[type="range"]::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    background-color: #e74c3c;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    border: 2px solid white;
+    cursor: pointer;
+    transition: .3s ease-in-out;
+}
+
+​input[type="range"]::-webkit-slider-thumb:hover {
+    background-color: white;
+    border: 2px solid #e74c3c;
+}
+
+input[type="range"]::-webkit-slider-thumb:active {
+    transform: scale(1.4);
+}
+
+#settings {
+    margin-top: 1.5px;
+    float: right;
+}
+
+#settings:link {
+    color: #34495e;
+}
+
+#settings:visited {
+    color: #34495e;
+}
+
+#controls {
+    margin: 20px auto;
+}
+
+p {
+    width: 33%;
+    margin-top: 0%;
+    margin-bottom: 0%;
+    margin-left: 33%;
+    margin-right: 0%;
+    text-align: center;
+    font-weight: bold;
+    font-style: italic;
+    font-size: 2em;
+    display: inline-block;
+}
