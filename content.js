@@ -2,7 +2,7 @@ chrome.runtime.onMessage.addListener(function (request) {
    
    
    if (document.URL.includes('https://www.crunchyroll.com/')){
-      crunchyRoll();
+      vilosPlayer();
    } 
    var vids = document.getElementsByTagName("video");
    console.log(vids);
@@ -13,7 +13,8 @@ chrome.runtime.onMessage.addListener(function (request) {
 
 });
 
-function crunchyRoll() {
+// touch vilos player to access element
+function vilosPlayer() {
    var iframe = VILOS_PLAYERJS.elem;
    console.log (iframe);
 }

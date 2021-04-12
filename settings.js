@@ -14,6 +14,14 @@ var apply = document.getElementById('apply');
 var validVal;
 var step;
 
+max.value = localStorage['speed-max'] !== undefined ? parseFloat(localStorage['speed-max']) : 5;
+min.value = localStorage['speed-min'] !== undefined ? parseFloat(localStorage['speed-min']) : .25;
+if (localStorage['speed-step'] === undefined){
+    var temp_btn = document.querySelector('#selection button');
+    localStorage['speed-step'] = temp_btn.value;
+    setStep(temp_btn);
+}
+
 var buttons = document.querySelectorAll('#selection button');
 buttons.forEach(elem => {
     elem.onclick = () => setStep(elem);
@@ -23,18 +31,13 @@ buttons.forEach(elem => {
 });
 setStep(step);
 
-
-// TEMPORARY -- ADD PERSISTANCE
-max.value = localStorage['speed-max'];
-min.value = localStorage['speed-min'];
-
 adjustLabel(max_input, max);
 adjustLabel(min_input, min);
 
 // Check validity of current configuration
 apply.onclick = () => {
     if (validVal === undefined) {
-        validVal = document.createElement('p');
+        validVal = document.createElement('span');
         document.getElementById('apply-box').appendChild(validVal);
     }
 
