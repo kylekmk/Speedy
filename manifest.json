@@ -1,6 +1,6 @@
 {
     "name": "Speedy",
-    "version": "0.0.0.1",
+    "version": "0.0.0.2",
     "manifest_version": 2,
     "content_scripts": [
         {
@@ -14,12 +14,48 @@
         }
     ],
     "browser_action": {
-        "default_popup": "popup.html",
+        "default_popup": "popup/popup.html",
         "default_title": "Speedy"
     },
+    "commands": {
+        "speed-slower": {
+            "suggested_key": {
+                "default": "Alt+Left",
+                "mac": "Alt+Left"
+            },
+            "description": "Decrease Speed"
+        },
+        "speed-faster": {
+            "suggested_key": {
+                "default": "Alt+Right",
+                "mac": "Alt+Right"
+            },
+            "description": "Increase Speed"
+        },
+        "speed-normal": {
+            "suggested_key": {
+                "default": "Alt+Down",
+                "mac": "Alt+Down"
+            },
+            "description": "Normal Speed"
+        },
+        "speed-max": {
+            "suggested_key": {
+                "default": "Alt+Up",
+                "mac": "Alt+Up"
+            },
+            "description": "Max Speed"
+        }
+    },
+    "background": {
+        "scripts": [
+            "background.js"
+        ],
+        "persistent": false
+    },
     "icons": {
-        "16": "icon16.png",
-        "48": "icon48.png",
-        "128": "icon128.png"
+        "16": "icons/icon16.png",
+        "48": "icons/icon48.png",
+        "128": "icons/icon128.png"
     }
 }

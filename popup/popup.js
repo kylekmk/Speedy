@@ -1,6 +1,6 @@
 document.addEventListener('DOMContentLoaded', function () {
 
-    var settingsUri = '../settings.html';
+    var settingsUri = '../settings/settings.html';
     var settingsElem = document.getElementById('settings');
     settingsElem.href = settingsUri;
 
@@ -26,7 +26,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
     // set html elements to proper values and track the agreed video speed
     slider.value = savedSpeed != undefined && savedSpeed <= maxSpeed && savedSpeed >= minSpeed ? savedSpeed : minSpeed + stepSpeed;
-    videoSpeed = slider.value;
+    videoSpeed = parseFloat(slider.value);
     input.value = parseFloat(slider.value).toFixed(2);
 
     slider.oninput = function () {
@@ -70,7 +70,7 @@ document.addEventListener('DOMContentLoaded', function () {
         chrome.tabs.query({ currentWindow: true, active: true },
             function (tabs) {
                 chrome.tabs.sendMessage(tabs[0].id, newSpeed)
-            })
+            });
     }
 
     function setSlider(slideSpeed) {
@@ -83,6 +83,9 @@ document.addEventListener('DOMContentLoaded', function () {
 
     function changeSpeed(speed) {
         var newSpeed = videoSpeed + speed;
+        console.log(speed);
+        console.log(videoSpeed);
+
         setSlider(newSpeed);
     }
 
@@ -98,4 +101,8 @@ document.addEventListener('DOMContentLoaded', function () {
         return false;
     }
 
+    chrome.runtime.onMessage.addListener(
+        function (message) {
+           setSlider(parseFloat(message.speed));
+        });
 }, false);
