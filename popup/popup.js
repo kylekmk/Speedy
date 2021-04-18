@@ -1,108 +1,106 @@
 document.addEventListener('DOMContentLoaded', function () {
+    chrome.storage.sync.get('settings', data => {
+        chrome.tabs.query({ active: true, currentWindow: true }, function (tabs) {
+            var myTabId = tabs[0].id;
 
-    var settingsUri = '../settings/settings.html';
-    var settingsElem = document.getElementById('settings');
-    settingsElem.href = settingsUri;
+            // default settings
+            var speedObj = {
+                step: .25,
+                min: .25,
+                max: 5.00
+            };
 
-    var videoSpeed;
-    var input_temp;
-    var decimal_bool = false;
-    var slider = document.getElementById("Slider");
-    var input = document.getElementById("speed-input");
+            // default speed
+            speedObj.speed = new Map();
 
-    var savedSpeed = localStorage['speed'] !== undefined ? parseFloat(localStorage['speed']) : 1.00;
-    var maxSpeed = localStorage['speed-max'] !== undefined ? parseFloat(localStorage['speed-max']) : 5.00;
-    var minSpeed = localStorage['speed-min'] !== undefined ? parseFloat(localStorage['speed-min']) : .25;
-    var stepSpeed = localStorage['speed-step'] !== undefined ? parseFloat(localStorage['speed-step']) : .25;
+            Object.assign(speedObj, data.settings);
 
-    document.getElementById('right-shift').onclick = function () { changeSpeed(stepSpeed); };
-    document.getElementById('left-shift').onclick = function () { changeSpeed(-1 * (stepSpeed)); };
-    document.getElementById('stop').onclick = function () { setSlider(1); }
+            // initialize variables
+            var videoSpeed;
+            var slider = document.getElementById("Slider");
+            var input = document.getElementById("speed-input");
 
-    slider.max = maxSpeed;
-    slider.min = minSpeed;
-    slider.step = stepSpeed;
-    setSpeed(savedSpeed);
+            // initialize settings and save data
+            var savedSpeed = speedObj.speed[myTabId] !== undefined ? parseFloat(speedObj.speed[myTabId]) : 1;
+            var maxSpeed = parseFloat(speedObj.max);
+            var minSpeed = parseFloat(speedObj.min);
+            var stepSpeed = parseFloat(speedObj.step);
 
-    // set html elements to proper values and track the agreed video speed
-    slider.value = savedSpeed != undefined && savedSpeed <= maxSpeed && savedSpeed >= minSpeed ? savedSpeed : minSpeed + stepSpeed;
-    videoSpeed = parseFloat(slider.value);
-    input.value = parseFloat(slider.value).toFixed(2);
+            // apply functions to arrows and stop button
+            document.getElementById('right-shift').onclick = function () { changeSpeed(stepSpeed); saveSpeed(); };
+            document.getElementById('left-shift').onclick = function () { changeSpeed(-1 * stepSpeed); saveSpeed(); };
+            document.getElementById('stop').onclick = function () { setSlider(1); }
 
-    slider.oninput = function () {
-        setSlider(slider.value);
-    };
+            // assign values to html slider
+            slider.max = maxSpeed;
+            slider.min = minSpeed;
+            slider.step = stepSpeed;
+            setSlider(savedSpeed <= maxSpeed && savedSpeed >= minSpeed ? savedSpeed : minSpeed + stepSpeed);
 
-    input.onclick = function () {
-        input_temp = input.value;
-        input.value = "";
-    };
+            // add slider behavior
+            slider.oninput = () => setSlider(slider.value);
+            slider.onchange = () => saveSpeed();
 
-    input.onchange = function () {
-        if (parseFloat(input.value) >= minSpeed && parseFloat(input.value) <= maxSpeed) {
-            input_temp = input.value;
-            setSlider(input.value);
-        } else {
-            input.value = input_temp;
-        }
-    };
+            // set html elements to proper values and track the agreed video speed
+            input.value = parseFloat(slider.value).toFixed(2);
 
-    input.oninput = function () {
-        var input_length = input.value.length;
-        var input_string = input.value;
+            // initialize input properties
+            input.max = maxSpeed;
+            input.step = stepSpeed;
+            input.min = minSpeed;
+            input.onfocus = () => { input.value = "" };
+            input.onblur = () => { input.value = parseFloat(slider.value).toFixed(2) };
+            input.onchange = () => { slider.value = parseFloat(input.value); setSlider(slider.value); };
 
-        if (!input_string.includes('.')) {
-            decimal_bool = false;
-        }
+            //*** FUNCTIONS ***//
 
-        // invalid string catcher
-        if ((input_length == 4 && !decimal_bool) || input_length > 4 || !isValidKey(input_string.charAt(input_length - 1))) {
-            input.value = input_string.substring(0, input_length - 1);
-        }
-    }
-    // FUNCTIONS
+            // send message request to content.js to change video speed
+            function setSpeed(newSpeed) {
+                console.log(newSpeed);
+                speedObj.speed[myTabId] = newSpeed;
+                videoSpeed = parseFloat(newSpeed);
+                input.value = videoSpeed.toFixed(2);
+                chrome.tabs.query({ currentWindow: true, active: true },
+                    function (tabs) {
+                        chrome.tabs.sendMessage(tabs[0].id, {
+                            type: 'video-speed',
+                            speed: newSpeed
+                        })
+                    });
+            }
 
-    function setSpeed(newSpeed) {
-        localStorage['speed'] = newSpeed;
-        console.log(newSpeed);
-        videoSpeed = parseFloat(newSpeed);
-        input.value = videoSpeed.toFixed(2);
-        chrome.tabs.query({ currentWindow: true, active: true },
-            function (tabs) {
-                chrome.tabs.sendMessage(tabs[0].id, newSpeed)
-            });
-    }
+            // sets slider to desired speed
+            // all requests to change speed funnel through here
+            function setSlider(slideSpeed) {
+                slideSpeed = parseFloat(slideSpeed);
+                // verify speed is in range
+                slideSpeed = slideSpeed > maxSpeed ?
+                    maxSpeed : slideSpeed < minSpeed ?
+                        minSpeed : slideSpeed;
+                slider.value = slideSpeed;
+                setSpeed(slideSpeed);
+            }
 
-    function setSlider(slideSpeed) {
-        slideSpeed = slideSpeed > maxSpeed ?
-            maxSpeed : slideSpeed < minSpeed ?
-                minSpeed : slideSpeed;
-        slider.value = slideSpeed;
-        setSpeed(slideSpeed);
-    }
+            // change speed by a 'speed' amount
+            function changeSpeed(speed) {
+                var newSpeed = videoSpeed + speed;
+                setSlider(newSpeed);
+            }
 
-    function changeSpeed(speed) {
-        var newSpeed = videoSpeed + speed;
-        console.log(speed);
-        console.log(videoSpeed);
+            // listener for shortcuts
+            chrome.runtime.onMessage.addListener(
+                function (message) {
+                    if (message.type === 'shortcut') {
+                        setSlider(parseFloat(message.speed));
+                    }
+                });
 
-        setSlider(newSpeed);
-    }
-
-    function isValidKey(char) {
-        if (char == '.' && !decimal_bool) {
-            decimal_bool = true;
-            return decimal_bool;
-        }
-
-        if (char >= '0' && char <= '9') {
-            return true;
-        }
-        return false;
-    }
-
-    chrome.runtime.onMessage.addListener(
-        function (message) {
-           setSlider(parseFloat(message.speed));
+            // save speed on changes
+            function saveSpeed() {
+                chrome.storage.sync.set({ settings: speedObj }, () => {
+                    console.log('Saved: ', speedObj);
+                });
+            }
         });
+    });
 }, false);
