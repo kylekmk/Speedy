@@ -15,13 +15,17 @@ document.addEventListener('DOMContentLoaded', function () {
 
             Object.assign(speedObj, data.settings);
 
+            if(!speedObj.speed[myTabId]) {
+                speedObj.speed[myTabId] = 1.00;
+            } 
+
             // initialize variables
             var videoSpeed;
             var slider = document.getElementById("Slider");
             var input = document.getElementById("speed-input");
 
             // initialize settings and save data
-            var savedSpeed = speedObj.speed[myTabId] !== undefined ? parseFloat(speedObj.speed[myTabId]) : 1;
+            var savedSpeed = parseFloat(speedObj.speed[myTabId]);
             var maxSpeed = parseFloat(speedObj.max);
             var minSpeed = parseFloat(speedObj.min);
             var stepSpeed = parseFloat(speedObj.step);
@@ -90,6 +94,7 @@ document.addEventListener('DOMContentLoaded', function () {
             // listener for shortcuts
             chrome.runtime.onMessage.addListener(
                 function (message) {
+                    console.log(message);
                     if (message.type === 'shortcut') {
                         setSlider(parseFloat(message.speed));
                     }

@@ -1,7 +1,7 @@
 chrome.commands.onCommand.addListener(function (command) {
     chrome.storage.sync.get('settings', data => {
         chrome.tabs.query({ active: true, currentWindow: true }, function (tabs) {
-            var myTabId = tabs[0].id
+            var myTabId = tabs[0].id;
 
             // default settings
             var speedObj = {
@@ -15,6 +15,8 @@ chrome.commands.onCommand.addListener(function (command) {
 
             Object.assign(speedObj, data.settings);
 
+            speedObj.speed[myTabId] = !speedObj.speed[myTabId] ? 1 : speedObj.speed[myTabId];
+
             const shortcut = command.split('-')[1];
             var curSpeed = parseFloat(speedObj.speed[myTabId]);
             var newSpeed = curSpeed;
@@ -27,7 +29,9 @@ chrome.commands.onCommand.addListener(function (command) {
                     newSpeed = curSpeed - parseFloat(speedObj.step);
                     break;
                 case 'normal':
-                    newSpeed = 1.00;
+                    newSpeed = 1.00 < speedObj.min ?
+                        speedObj.min + speedObj.step : 1.00 > speedObj.max ?
+                            speedObj.max - speedObj.step : 1.00;
                     break;
                 case 'max':
                     newSpeed = parseFloat(speedObj.max);
@@ -35,17 +39,24 @@ chrome.commands.onCommand.addListener(function (command) {
             }
 
             // SAVE SPEED
+
+            newSpeed = newSpeed >= speedObj.max ? speedObj.max :
+                newSpeed <= speedObj.min ? speedObj.min : newSpeed
+
             speedObj.speed[myTabId] = newSpeed;
 
             chrome.storage.sync.set({ settings: speedObj }, () => {
                 console.log('Saved: ', speedObj);
-
+                console.log(myTabId);
                 chrome.runtime.sendMessage({
                     type: 'shortcut',
                     speed: speedObj.speed[myTabId]
-                })
+                });
 
-                chrome.tabs.sendMessage(myTabId.id, speedObj.speed[myTabId]);
+                chrome.tabs.sendMessage(myTabId, {
+                    type: 'video-speed',
+                    speed: speedObj.speed[myTabId]
+                });
             });
         });
     });
@@ -70,7 +81,7 @@ chrome.runtime.onMessage.addListener(function (request) {
 
                 Object.assign(speedObj, data.settings);
 
-                speedObj.speed[myTabId] = 1;
+                speedObj.speed[myTabId] = 1.00;
 
                 chrome.storage.sync.set({ settings: speedObj }, () => {
                     console.log('Saved: ', speedObj);
@@ -97,8 +108,12 @@ window.onload = () => {
         // default speed
         speedObj.speed = new Map();
 
-        chrome.storage.sync.set({ settings: speedObj }, () => {
-            console.log('Saved: ', speedObj);
+        chrome.tabs.query({ active: true, currentWindow: true }, function (tabs) {
+            var myTabId = tabs[0].id;
+            speedObj.speed[myTabId] = 1.00;
+            chrome.storage.sync.set({ settings: speedObj }, () => {
+                console.log('Saved: ', speedObj);
+            });
         });
     });
 

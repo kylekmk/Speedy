@@ -65,7 +65,7 @@ document.addEventListener('DOMContentLoaded', function () {
         // Check validity of current configuration
         apply.onclick = () => {
             // Creates approved/denied text
-            if (validVal === undefined) {
+            if (!validVal) {
                 validVal = document.createElement('span');
                 document.querySelector('#apply-box').appendChild(validVal);
             }
@@ -96,6 +96,13 @@ document.addEventListener('DOMContentLoaded', function () {
             }
         };
 
+        document.querySelector('#shortcut').onclick = () => {
+
+            var newURL = "chrome://extensions/shortcuts";
+            chrome.tabs.create({ url: newURL });
+
+        };
+
         // adjusts label for sliders
         function adjustLabel(input_field, elem) {
             var roundNum = parseFloat(elem.value).toFixed(2);
@@ -109,7 +116,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
         // function the buttons call, sets step value
         function setStep(btn) {
-            if (step !== undefined) {
+            if (step) {
                 step.className = '';
             }
             console.log(btn);
