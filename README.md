@@ -8,13 +8,13 @@ Speedy is a Chrome Extension which enables the user to fast-forward or slow-down
 
 Adjust the speed by using the slider or typing in your desired speed. Use the arrows to change the speed and stop button to return to your normal speed.
 
-![alt text](https://github.com/kylekmk/Speedy/blob/master/screenshots/popup.GIF?raw=true)
+![alt text](https://github.com/kylekmk/Speedy/blob/main/screenshots/popup.gif?raw=true)
 
 ## Speedy Settings
 
 Adjust your desired step size, maximum and minimum speeds, and change your shortcuts!
 
-![alt text](https://github.com/kylekmk/Speedy/blob/master/screenshots/settings.GIF?raw=true)
+![alt text](https://github.com/kylekmk/Speedy/blob/main/screenshots/settings.gif?raw=true)
 
 ## Speedy Shortcuts
 
