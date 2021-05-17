@@ -1,5 +1,7 @@
 # Speedy
 
+**Download Here:** [Chrome Web Store](https://chrome.google.com/webstore/detail/speedy/kgfeknmpndhamomlomdjadlffammgkld?hl=en&authuser=3)
+
 ## What is Speedy?
 
 Speedy is a Chrome Extension which enables the user to fast-forward or slow-down **ANY HTML video** elements. The user can specify the range of video speeds from 0 - 15 times speed, choose the step size, and customize shortcuts.
